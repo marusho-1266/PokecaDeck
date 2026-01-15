@@ -27,6 +27,7 @@ module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Content-Type', 'application/json');
 
   // OPTIONSリクエスト（プリフライト）の処理
   if (req.method === 'OPTIONS') {
@@ -41,12 +42,20 @@ module.exports = async (req, res) => {
   // リクエストボディをパース
   let body;
   try {
-    body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+    // Vercelではreq.bodyが既にパースされている場合がある
+    if (typeof req.body === 'string') {
+      body = JSON.parse(req.body);
+    } else if (req.body && typeof req.body === 'object') {
+      body = req.body;
+    } else {
+      return res.status(400).json({ error: 'リクエストボディが無効です' });
+    }
   } catch (e) {
-    return res.status(400).json({ error: 'Invalid JSON' });
+    console.error('リクエストボディのパースエラー:', e);
+    return res.status(400).json({ error: 'Invalid JSON: ' + e.message });
   }
 
-  const { deckCode } = body;
+  const { deckCode } = body || {};
 
   if (!deckCode) {
     return res.status(400).json({ error: 'デッキコードが指定されていません' });
@@ -158,28 +167,42 @@ module.exports = async (req, res) => {
 
   } catch (error) {
     console.error('エラーが発生しました:', error);
+    console.error('エラースタック:', error.stack);
     
     // クリーンアップ
-    if (page) {
-      await page.close().catch(() => {});
-    }
-    if (browser) {
-      await browser.close().catch(() => {});
+    try {
+      if (page) {
+        await page.close().catch(() => {});
+      }
+      if (browser) {
+        await browser.close().catch(() => {});
+      }
+    } catch (cleanupError) {
+      console.error('クリーンアップエラー:', cleanupError);
     }
 
-    // エラーメッセージを適切に処理
+    // エラーメッセージを適切に処理（必ずJSONレスポンスを返す）
+    let statusCode = 500;
+    let errorMessage = 'デッキ情報の取得に失敗しました';
+
     if (error.message.includes('timeout')) {
-      return res.status(408).json({ 
-        error: 'タイムアウト: ページの読み込みに時間がかかりすぎました' 
-      });
-    } else if (error.message.includes('net::ERR')) {
-      return res.status(503).json({ 
-        error: 'サーバーに接続できませんでした' 
-      });
+      statusCode = 408;
+      errorMessage = 'タイムアウト: ページの読み込みに時間がかかりすぎました';
+    } else if (error.message.includes('net::ERR') || error.message.includes('ECONNREFUSED')) {
+      statusCode = 503;
+      errorMessage = 'サーバーに接続できませんでした';
+    } else if (error.message.includes('libnss3') || error.message.includes('shared libraries')) {
+      statusCode = 500;
+      errorMessage = 'ブラウザの起動に失敗しました。しばらく待ってから再度お試しください。';
     } else {
-      return res.status(500).json({ 
-        error: 'デッキ情報の取得に失敗しました: ' + error.message 
-      });
+      // エラーメッセージの最初の100文字のみを返す（機密情報の漏洩を防ぐ）
+      const safeMessage = error.message ? error.message.substring(0, 100) : 'Unknown error';
+      errorMessage = `デッキ情報の取得に失敗しました: ${safeMessage}`;
     }
+
+    return res.status(statusCode).json({ 
+      success: false,
+      error: errorMessage 
+    });
   }
 };

@@ -70,6 +70,14 @@ async function analyzeDeck() {
             body: JSON.stringify({ deckCode })
         });
 
+        // レスポンスのContent-Typeを確認
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            const text = await response.text();
+            console.error('非JSONレスポンス:', text);
+            throw new Error('サーバーから無効なレスポンスが返されました');
+        }
+
         const data = await response.json();
 
         if (!response.ok) {
@@ -84,7 +92,12 @@ async function analyzeDeck() {
 
     } catch (error) {
         console.error('エラー:', error);
-        showError(error.message || 'デッキ情報の取得中にエラーが発生しました');
+        // エラーメッセージがJSONパースエラーの場合は、より分かりやすいメッセージに変更
+        if (error.message.includes('JSON') || error.message.includes('Unexpected token')) {
+            showError('サーバーエラーが発生しました。しばらく待ってから再度お試しください。');
+        } else {
+            showError(error.message || 'デッキ情報の取得中にエラーが発生しました');
+        }
     } finally {
         hideLoading();
         analyzeBtn.disabled = false;
