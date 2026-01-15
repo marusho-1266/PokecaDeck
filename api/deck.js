@@ -7,69 +7,84 @@ chromium.setGraphicsMode(false);
 async function getBrowser() {
   // Vercel環境ではリクエストごとに新しいブラウザインスタンスを作成
   // （Serverless Functionsでは再利用が推奨されない）
-  return await puppeteer.launch({
-    args: [
-      ...chromium.args,
-      '--hide-scrollbars',
-      '--disable-web-security',
-      '--disable-features=IsolateOrigins,site-per-process',
-    ],
-    defaultViewport: chromium.defaultViewport,
-    executablePath: await chromium.executablePath(),
-    headless: chromium.headless,
-    ignoreHTTPSErrors: true,
-  });
+  try {
+    console.log('Chromiumの実行パスを取得中...');
+    const executablePath = await chromium.executablePath();
+    console.log('Chromium実行パス:', executablePath);
+    
+    console.log('ブラウザを起動中...');
+    const browser = await puppeteer.launch({
+      args: [
+        ...chromium.args,
+        '--hide-scrollbars',
+        '--disable-web-security',
+        '--disable-features=IsolateOrigins,site-per-process',
+      ],
+      defaultViewport: chromium.defaultViewport,
+      executablePath: executablePath,
+      headless: chromium.headless,
+      ignoreHTTPSErrors: true,
+    });
+    
+    console.log('ブラウザの起動に成功しました');
+    return browser;
+  } catch (error) {
+    console.error('ブラウザの起動に失敗しました:', error);
+    throw error;
+  }
 }
 
 // Vercel Serverless Functionとしてエクスポート
 module.exports = async (req, res) => {
-  // CORSヘッダーを設定
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.setHeader('Content-Type', 'application/json');
-
-  // OPTIONSリクエスト（プリフライト）の処理
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
-  // POSTリクエストのみ処理
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  // リクエストボディをパース
-  let body;
+  // 最外側のtry-catchで全てのエラーをキャッチ
   try {
-    // Vercelではreq.bodyが既にパースされている場合がある
-    if (typeof req.body === 'string') {
-      body = JSON.parse(req.body);
-    } else if (req.body && typeof req.body === 'object') {
-      body = req.body;
-    } else {
-      return res.status(400).json({ error: 'リクエストボディが無効です' });
+    // CORSヘッダーを設定
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Content-Type', 'application/json');
+
+    // OPTIONSリクエスト（プリフライト）の処理
+    if (req.method === 'OPTIONS') {
+      return res.status(200).end();
     }
-  } catch (e) {
-    console.error('リクエストボディのパースエラー:', e);
-    return res.status(400).json({ error: 'Invalid JSON: ' + e.message });
-  }
 
-  const { deckCode } = body || {};
+    // POSTリクエストのみ処理
+    if (req.method !== 'POST') {
+      return res.status(405).json({ success: false, error: 'Method not allowed' });
+    }
 
-  if (!deckCode) {
-    return res.status(400).json({ error: 'デッキコードが指定されていません' });
-  }
+    // リクエストボディをパース
+    let body;
+    try {
+      // Vercelではreq.bodyが既にパースされている場合がある
+      if (typeof req.body === 'string') {
+        body = JSON.parse(req.body);
+      } else if (req.body && typeof req.body === 'object') {
+        body = req.body;
+      } else {
+        return res.status(400).json({ success: false, error: 'リクエストボディが無効です' });
+      }
+    } catch (e) {
+      console.error('リクエストボディのパースエラー:', e);
+      return res.status(400).json({ success: false, error: 'Invalid JSON: ' + e.message });
+    }
 
-  // デッキコードの形式チェック（16文字、ハイフン区切り）
-  const deckCodePattern = /^[A-Za-z0-9]{6}-[A-Za-z0-9]{6}-[A-Za-z0-9]{6}$/;
-  if (!deckCodePattern.test(deckCode)) {
-    return res.status(400).json({ error: '無効なデッキコード形式です' });
-  }
+    const { deckCode } = body || {};
 
-  let browser = null;
-  let page = null;
-  try {
+    if (!deckCode) {
+      return res.status(400).json({ success: false, error: 'デッキコードが指定されていません' });
+    }
+
+    // デッキコードの形式チェック（16文字、ハイフン区切り）
+    const deckCodePattern = /^[A-Za-z0-9]{6}-[A-Za-z0-9]{6}-[A-Za-z0-9]{6}$/;
+    if (!deckCodePattern.test(deckCode)) {
+      return res.status(400).json({ success: false, error: '無効なデッキコード形式です' });
+    }
+
+    let browser = null;
+    let page = null;
+    try {
     browser = await getBrowser();
     page = await browser.newPage();
 
@@ -203,6 +218,16 @@ module.exports = async (req, res) => {
     return res.status(statusCode).json({ 
       success: false,
       error: errorMessage 
+    });
+  } catch (outerError) {
+    // 最外側のエラーハンドリング（予期しないエラー）
+    console.error('予期しないエラーが発生しました:', outerError);
+    console.error('エラースタック:', outerError.stack);
+    
+    // 必ずJSONレスポンスを返す
+    return res.status(500).json({
+      success: false,
+      error: 'サーバーエラーが発生しました。しばらく待ってから再度お試しください。'
     });
   }
 };

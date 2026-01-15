@@ -1,1 +1,7 @@
-{}
+{
+  "functions": {
+    "api/deck.js": {
+      "maxDuration": 30
+    }
+  }
+}
