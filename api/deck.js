@@ -1,21 +1,24 @@
 const puppeteer = require('puppeteer-core');
 const chromium = require('@sparticuz/chromium');
 
-// ブラウザインスタンスを再利用（パフォーマンス向上）
-let browser = null;
+// Chromiumの設定を最適化
+chromium.setGraphicsMode(false);
 
 async function getBrowser() {
-  if (!browser) {
-    // Vercel環境では@sparticuz/chromiumを使用
-    browser = await puppeteer.launch({
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(),
-      headless: chromium.headless,
-      ignoreHTTPSErrors: true,
-    });
-  }
-  return browser;
+  // Vercel環境ではリクエストごとに新しいブラウザインスタンスを作成
+  // （Serverless Functionsでは再利用が推奨されない）
+  return await puppeteer.launch({
+    args: [
+      ...chromium.args,
+      '--hide-scrollbars',
+      '--disable-web-security',
+      '--disable-features=IsolateOrigins,site-per-process',
+    ],
+    defaultViewport: chromium.defaultViewport,
+    executablePath: await chromium.executablePath(),
+    headless: chromium.headless,
+    ignoreHTTPSErrors: true,
+  });
 }
 
 // Vercel Serverless Functionとしてエクスポート
@@ -55,10 +58,11 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: '無効なデッキコード形式です' });
   }
 
+  let browser = null;
   let page = null;
   try {
-    const browserInstance = await getBrowser();
-    page = await browserInstance.newPage();
+    browser = await getBrowser();
+    page = await browser.newPage();
 
     // User-Agentを設定（Bot検知を避けるため）
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
@@ -145,6 +149,7 @@ module.exports = async (req, res) => {
     });
 
     await page.close();
+    await browser.close();
 
     res.json({
       success: true,
@@ -154,8 +159,12 @@ module.exports = async (req, res) => {
   } catch (error) {
     console.error('エラーが発生しました:', error);
     
+    // クリーンアップ
     if (page) {
       await page.close().catch(() => {});
+    }
+    if (browser) {
+      await browser.close().catch(() => {});
     }
 
     // エラーメッセージを適切に処理
