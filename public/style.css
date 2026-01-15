@@ -246,8 +246,14 @@ main {
 
 .cards-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 16px;
+}
+
+@media (max-width: 1400px) {
+    .cards-container {
+        grid-template-columns: repeat(4, 1fr);
+    }
 }
 
 .card-item {
@@ -339,6 +345,140 @@ main {
     border-bottom: 2px solid #e0e0e0;
 }
 
+/* 初手練習セクション */
+.opening-hand-section {
+    margin-bottom: 30px;
+    padding: 24px;
+    background: #f8f9fa;
+    border-radius: 12px;
+}
+
+.opening-hand-section h3 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #333;
+    border-bottom: 2px solid #667eea;
+    padding-bottom: 10px;
+}
+
+.opening-hand-controls {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.btn-secondary {
+    padding: 12px 24px;
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4);
+}
+
+.btn-secondary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary.hidden {
+    display: none;
+}
+
+.deck-count {
+    font-size: 1.1rem;
+    color: #666;
+    margin-left: auto;
+}
+
+.deck-count strong {
+    color: #667eea;
+    font-weight: 700;
+}
+
+.opening-hand-container {
+    margin-top: 20px;
+}
+
+.opening-hand-container.hidden {
+    display: none;
+}
+
+
+.hand-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 12px;
+}
+
+@media (max-width: 1200px) {
+    .hand-cards-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .hand-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.hand-card {
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 12px;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.hand-card:hover {
+    border-color: #667eea;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+    transform: translateY(-2px);
+}
+
+.hand-card-image {
+    width: 100%;
+    height: 180px;
+    object-fit: contain;
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 8px;
+}
+
+.hand-card-info {
+    flex: 1;
+}
+
+.hand-card-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+    color: #333;
+    line-height: 1.3;
+}
+
+.hand-card-category {
+    font-size: 0.75rem;
+    color: #666;
+    background: #f0f0f0;
+    padding: 2px 8px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
 footer {
     background: #f8f9fa;
     padding: 30px;
@@ -378,6 +518,6 @@ footer p {
     }
 
     .cards-container {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
     }
 }

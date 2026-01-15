@@ -8,6 +8,15 @@ const resultDeckCode = document.getElementById('resultDeckCode');
 const resultTotalCards = document.getElementById('resultTotalCards');
 const summaryGrid = document.getElementById('summaryGrid');
 const cardsContainer = document.getElementById('cardsContainer');
+const drawHandBtn = document.getElementById('drawHandBtn');
+const resetHandBtn = document.getElementById('resetHandBtn');
+const openingHandContainer = document.getElementById('openingHandContainer');
+const deckCount = document.getElementById('deckCount');
+
+// デッキ情報とゲーム状態
+let currentDeckData = null;
+let deck = []; // 山札（カードの配列）
+let hand = []; // 手札（7枚）
 
 // カテゴリ名の日本語マッピング
 const categoryNames = {
@@ -88,6 +97,10 @@ function displayResult(deckData) {
     resultDeckCode.textContent = deckData.deckCode;
     resultTotalCards.textContent = deckData.totalCards;
 
+    // デッキ情報を保存
+    currentDeckData = deckData;
+    initializeDeck(deckData);
+
     // サマリー表示
     displaySummary(deckData);
 
@@ -96,6 +109,137 @@ function displayResult(deckData) {
 
     showResult();
 }
+
+// デッキを初期化（カードを枚数分展開して配列に）
+function initializeDeck(deckData) {
+    deck = [];
+    hand = [];
+    
+    // 各カードを枚数分展開して山札に追加
+    deckData.cards.forEach(card => {
+        for (let i = 0; i < card.count; i++) {
+            deck.push({
+                ...card,
+                uniqueId: `${card.cardId}-${i}` // 一意のIDを付与
+            });
+        }
+    });
+    
+    // 山札をシャッフル
+    shuffleDeck();
+    
+    // UI更新
+    updateDeckCount();
+    resetHandDisplay();
+}
+
+// Fisher-Yatesアルゴリズムでシャッフル
+function shuffleDeck() {
+    for (let i = deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+    }
+}
+
+// 初手を引く
+function drawOpeningHand() {
+    if (deck.length < 7) {
+        showError('山札が7枚未満です');
+        return;
+    }
+    
+    // 手札をクリア
+    hand = [];
+    
+    // 7枚引く
+    for (let i = 0; i < 7; i++) {
+        if (deck.length > 0) {
+            hand.push(deck.pop());
+        }
+    }
+    
+    // UI更新
+    displayHand();
+    updateDeckCount();
+    
+    // ボタンの表示切り替え
+    drawHandBtn.classList.add('hidden');
+    resetHandBtn.classList.remove('hidden');
+}
+
+// 手札を表示
+function displayHand() {
+    openingHandContainer.innerHTML = '';
+    openingHandContainer.classList.remove('hidden');
+    
+    if (hand.length === 0) {
+        return;
+    }
+    
+    // 7枚を横並びで表示
+    const cardsGrid = document.createElement('div');
+    cardsGrid.className = 'hand-cards-grid';
+    
+    hand.forEach(card => {
+        const cardElement = createHandCardElement(card);
+        cardsGrid.appendChild(cardElement);
+    });
+    
+    openingHandContainer.appendChild(cardsGrid);
+}
+
+// 手札のカード要素を作成
+function createHandCardElement(card) {
+    const cardDiv = document.createElement('div');
+    cardDiv.className = 'hand-card';
+    
+    const imageHtml = card.imageUrl 
+        ? `<img src="${card.imageUrl}" alt="${card.name}" class="hand-card-image" onerror="this.style.display='none'">`
+        : '<div class="hand-card-image" style="display: flex; align-items: center; justify-content: center; color: #999; font-size: 0.8rem;">画像なし</div>';
+    
+    cardDiv.innerHTML = `
+        ${imageHtml}
+        <div class="hand-card-info">
+            <div class="hand-card-name">${card.name}</div>
+            <div class="hand-card-category">${categoryNames[card.category] || card.category}</div>
+        </div>
+    `;
+    
+    return cardDiv;
+}
+
+// 手札をリセット
+function resetHand() {
+    // 手札を山札に戻す
+    deck.push(...hand);
+    hand = [];
+    
+    // 山札をシャッフル
+    shuffleDeck();
+    
+    // UI更新
+    resetHandDisplay();
+    updateDeckCount();
+    
+    // ボタンの表示切り替え
+    drawHandBtn.classList.remove('hidden');
+    resetHandBtn.classList.add('hidden');
+}
+
+// 手札表示をリセット
+function resetHandDisplay() {
+    openingHandContainer.innerHTML = '';
+    openingHandContainer.classList.add('hidden');
+}
+
+// 山札の枚数を更新
+function updateDeckCount() {
+    deckCount.textContent = deck.length;
+}
+
+// イベントリスナー
+drawHandBtn.addEventListener('click', drawOpeningHand);
+resetHandBtn.addEventListener('click', resetHand);
 
 // サマリー表示
 function displaySummary(deckData) {
