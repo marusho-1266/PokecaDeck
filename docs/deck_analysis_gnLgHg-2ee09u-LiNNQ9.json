@@ -1,0 +1,240 @@
+{
+  "deckCode": "gnLgHg-2ee09u-LiNNQ9",
+  "totalCards": 60,
+  "url": "https://www.pokemon-card.com/deck/result.html/deckID/gnLgHg-2ee09u-LiNNQ9/",
+  "analysisDate": "2026-01-14",
+  "summary": {
+    "pokemon": 6,
+    "goods": 5,
+    "tool": 2,
+    "support": 5,
+    "stadium": 1,
+    "energy": 2,
+    "totalCardTypes": 21
+  },
+  "cards": [
+    {
+      "cardId": "48624",
+      "name": "ロケット団のヤミカラス",
+      "fullName": "ロケット団のヤミカラス(M2a 102/193)",
+      "count": 4,
+      "category": "ポケモン",
+      "mainFlag": 1,
+      "imageUrl": "https://www.pokemon-card.com/assets/images/card_images/large/M2a/048624_P_ROKETTODANNOYAMIKARASU.jpg",
+      "detailUrl": "https://www.pokemon-card.com/card-search/details.php/card/48624/"
+    },
+    {
+      "cardId": "48625",
+      "name": "ロケット団のドンカラス",
+      "fullName": "ロケット団のドンカラス(M2a 103/193)",
+      "count": 3,
+      "category": "ポケモン",
+      "mainFlag": 1,
+      "imageUrl": "https://www.pokemon-card.com/assets/images/card_images/large/M2a/048625_P_ROKETTODANNODONKARASU.jpg",
+      "detailUrl": "https://www.pokemon-card.com/card-search/details.php/card/48625/"
+    },
+    {
+      "cardId": "47474",
+      "name": "ロケット団のポリゴン",
+      "fullName": "ロケット団のポリゴン(SV10 081/098)",
+      "count": 3,
+      "category": "ポケモン",
+      "mainFlag": 1,
+      "imageUrl": "https://www.pokemon-card.com/assets/images/card_images/large/SV10/047474_P_ROKETTODANNOPORIGON.jpg",
+      "detailUrl": "https://www.pokemon-card.com/card-search/details.php/card/47474/"
+    },
+    {
+      "cardId": "47475",
+      "name": "ロケット団のポリゴン2",
+      "fullName": "ロケット団のポリゴン2(SV10 082/098)",
+      "count": 2,
+      "category": "ポケモン",
+      "mainFlag": 1,
+      "imageUrl": "https://www.pokemon-card.com/assets/images/card_images/large/SV10/047475_P_ROKETTODANNOPORIGON2.jpg",
+      "detailUrl": "https://www.pokemon-card.com/card-search/details.php/card/47475/"
+    },
+    {
+      "cardId": "47476",
+      "name": "ロケット団のポリゴンZ",
+      "fullName": "ロケット団のポリゴンZ(SV10 083/098)",
+      "count": 1,
+      "category": "ポケモン",
+      "mainFlag": 1,
+      "imageUrl": "https://www.pokemon-card.com/assets/images/card_images/large/SV10/047476_P_ROKETTODANNOPORIGONZ.jpg",
+      "detailUrl": "https://www.pokemon-card.com/card-search/details.php/card/47476/"
+    },
+    {
+      "cardId": "47415",
+      "name": "ロケット団のフリーザー",
+      "fullName": "ロケット団のフリーザー(SV10 022/098)",
+      "count": 1,
+      "category": "ポケモン",
+      "mainFlag": 1,
+      "imageUrl": "https://www.pokemon-card.com/assets/images/card_images/large/SV10/047415_P_ROKETTODANNOFURIZA.jpg",
+      "detailUrl": "https://www.pokemon-card.com/card-search/details.php/card/47415/"
+    },
+    {
+      "cardId": "49601",
+      "name": "ポケパッド",
+      "fullName": "ポケパッド",
+      "count": 4,
+      "category": "グッズ",
+      "mainFlag": 1,
+      "imageUrl": "https://www.pokemon-card.com/assets/images/card_images/large/M-P/049601_T_POKEPADDO.jpg",
+      "detailUrl": "https://www.pokemon-card.com/card-search/details.php/card/49601/"
+    },
+    {
+      "cardId": "47483",
+      "name": "ロケット団のレシーバー",
+      "fullName": "ロケット団のレシーバー",
+      "count": 4,
+      "category": "グッズ",
+      "mainFlag": 1,
+      "imageUrl": "https://www.pokemon-card.com/assets/images/card_images/large/SV10/047483_T_ROKETTODANNORESHIBA.jpg",
+      "detailUrl": "https://www.pokemon-card.com/card-search/details.php/card/47483/"
+    },
+    {
+      "cardId": "49386",
+      "name": "夜のタンカ",
+      "fullName": "夜のタンカ",
+      "count": 2,
+      "category": "グッズ",
+      "mainFlag": 1,
+      "imageUrl": "https://www.pokemon-card.com/assets/images/card_images/large/MC/049386_T_YORUNOTANKA.jpg",
+      "detailUrl": "https://www.pokemon-card.com/card-search/details.php/card/49386/"
+    },
+    {
+      "cardId": "45799",
+      "name": "ロトりぼう",
+      "fullName": "ロトりぼう",
+      "count": 2,
+      "category": "グッズ",
+      "mainFlag": 1,
+      "imageUrl": "https://www.pokemon-card.com/assets/images/card_images/large/SV-P/045799_T_ROTORIBOU.jpg",
+      "detailUrl": "https://www.pokemon-card.com/card-search/details.php/card/45799/"
+    },
+    {
+      "cardId": "46437",
+      "name": "ミラクルインカム(ACE SPEC)",
+      "fullName": "ミラクルインカム(ACE SPEC)",
+      "count": 1,
+      "category": "グッズ",
+      "mainFlag": 1,
+      "imageUrl": "https://www.pokemon-card.com/assets/images/card_images/large/SV8/046437_T_MIRAKURUINKAMU.jpg",
+      "detailUrl": "https://www.pokemon-card.com/card-search/details.php/card/46437/"
+    },
+    {
+      "cardId": "49405",
+      "name": "ブレイブバングル",
+      "fullName": "ブレイブバングル",
+      "count": 1,
+      "category": "ポケモンのどうぐ",
+      "mainFlag": 1,
+      "imageUrl": "https://www.pokemon-card.com/assets/images/card_images/large/MC/049405_T_BUREIBUBANGURU.jpg",
+      "detailUrl": "https://www.pokemon-card.com/card-search/details.php/card/49405/"
+    },
+    {
+      "cardId": "49404",
+      "name": "ふうせん",
+      "fullName": "ふうせん",
+      "count": 1,
+      "category": "ポケモンのどうぐ",
+      "mainFlag": 1,
+      "imageUrl": "https://www.pokemon-card.com/assets/images/card_images/large/MC/049404_T_FUUSEN.jpg",
+      "detailUrl": "https://www.pokemon-card.com/card-search/details.php/card/49404/"
+    },
+    {
+      "cardId": "47484",
+      "name": "ロケット団のアテナ",
+      "fullName": "ロケット団のアテナ",
+      "count": 4,
+      "category": "サポート",
+      "mainFlag": 1,
+      "imageUrl": "https://www.pokemon-card.com/assets/images/card_images/large/SV10/047484_T_ROKETTODANNOATENA.jpg",
+      "detailUrl": "https://www.pokemon-card.com/card-search/details.php/card/47484/"
+    },
+    {
+      "cardId": "47485",
+      "name": "ロケット団のアポロ",
+      "fullName": "ロケット団のアポロ",
+      "count": 4,
+      "category": "サポート",
+      "mainFlag": 1,
+      "imageUrl": "https://www.pokemon-card.com/assets/images/card_images/large/SV10/047485_T_ROKETTODANNOAPORO.jpg",
+      "detailUrl": "https://www.pokemon-card.com/card-search/details.php/card/47485/"
+    },
+    {
+      "cardId": "47488",
+      "name": "ロケット団のランス",
+      "fullName": "ロケット団のランス",
+      "count": 4,
+      "category": "サポート",
+      "mainFlag": 1,
+      "imageUrl": "https://www.pokemon-card.com/assets/images/card_images/large/SV10/047488_T_ROKETTODANNORANSU.jpg",
+      "detailUrl": "https://www.pokemon-card.com/card-search/details.php/card/47488/"
+    },
+    {
+      "cardId": "47487",
+      "name": "ロケット団のラムダ",
+      "fullName": "ロケット団のラムダ",
+      "count": 4,
+      "category": "サポート",
+      "mainFlag": 1,
+      "imageUrl": "https://www.pokemon-card.com/assets/images/card_images/large/SV10/047487_T_ROKETTODANNORAMUDA.jpg",
+      "detailUrl": "https://www.pokemon-card.com/card-search/details.php/card/47487/"
+    },
+    {
+      "cardId": "47486",
+      "name": "ロケット団のサカキ",
+      "fullName": "ロケット団のサカキ",
+      "count": 4,
+      "category": "サポート",
+      "mainFlag": 1,
+      "imageUrl": "https://www.pokemon-card.com/assets/images/card_images/large/SV10/047486_T_ROKETTODANNOSAKAKI.jpg",
+      "detailUrl": "https://www.pokemon-card.com/card-search/details.php/card/47486/"
+    },
+    {
+      "cardId": "47490",
+      "name": "ロケット団のファクトリー",
+      "fullName": "ロケット団のファクトリー",
+      "count": 4,
+      "category": "スタジアム",
+      "mainFlag": 1,
+      "imageUrl": "https://www.pokemon-card.com/assets/images/card_images/large/SV10/047490_T_ROKETTODANNOFUAKUTORI.jpg",
+      "detailUrl": "https://www.pokemon-card.com/card-search/details.php/card/47490/"
+    },
+    {
+      "cardId": "47491",
+      "name": "ロケット団エネルギー",
+      "fullName": "ロケット団エネルギー",
+      "count": 4,
+      "category": "エネルギー",
+      "mainFlag": 1,
+      "imageUrl": "https://www.pokemon-card.com/assets/images/card_images/large/SV10/047491_E_ROKETTODANENERUGI.jpg",
+      "detailUrl": "https://www.pokemon-card.com/card-search/details.php/card/47491/"
+    },
+    {
+      "cardId": "47901",
+      "name": "イグニッションエネルギー",
+      "fullName": "イグニッションエネルギー",
+      "count": 3,
+      "category": "エネルギー",
+      "mainFlag": 1,
+      "imageUrl": "https://www.pokemon-card.com/assets/images/card_images/large/MA/047901_E_IGUNISSHIXYONENERUGI.jpg",
+      "detailUrl": "https://www.pokemon-card.com/card-search/details.php/card/47901/"
+    }
+  ],
+  "technicalDetails": {
+    "dataSource": "HTML hidden input fields and JavaScript PCGDECK object",
+    "dataFormat": "cardId_count_mainFlag (e.g., 48624_4_1)",
+    "categories": {
+      "deck_pke": "ポケモン",
+      "deck_gds": "グッズ",
+      "deck_tool": "ポケモンのどうぐ",
+      "deck_sup": "サポート",
+      "deck_sta": "スタジアム",
+      "deck_ene": "エネルギー"
+    },
+    "extractionMethod": "Browser DOM parsing with JavaScript evaluation"
+  }
+}
