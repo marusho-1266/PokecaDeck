@@ -1,5 +1,26 @@
 # デプロイメントガイド
 
+## クイックスタート
+
+**最も簡単な方法：Render（推奨）**
+
+1. [render.com](https://render.com)にアカウント作成
+2. 「New」→「Web Service」
+3. GitHubリポジトリを接続
+4. 設定：
+   - Build Command: `npm install`
+   - Start Command: `npm start`
+5. 「Create Web Service」をクリック
+
+**その他の選択肢：**
+- **Railway**: 設定が最も簡単（[railway.app](https://railway.app)）
+- **Vercel**: サーバーレス関数として動作（Proプラン推奨）
+- **Fly.io**: Docker対応で柔軟
+
+詳細は下記の各セクションを参照してください。
+
+---
+
 ## GitHub Pagesでの動作について
 
 **現在の構成では、GitHub Pagesでは動作しません。**
@@ -104,46 +125,388 @@ VercelはNode.jsサーバーも実行可能なので、フロントエンドと�
    vercel --prod
    ```
 
-### オプション3: Railway / Render
+### オプション3: Railway（推奨度：★★★★☆）
 
-RailwayやRenderはNode.jsアプリケーションを直接デプロイできます。
+RailwayはNode.jsアプリケーションを簡単にデプロイできます。Puppeteerにも対応しています。
 
-**Railwayの場合：**
+**メリット：**
+- GitHub連携で自動デプロイ
+- 設定が簡単
+- データベースも簡単に追加可能
+- Docker対応
 
-1. Railwayにアカウント作成
-2. GitHubリポジトリを接続
-3. 自動的にデプロイ
+**デメリット：**
+- 無料枠は制限が厳しい（月$5のクレジット）
+- スケールするとコストが上がる
 
-**Renderの場合：**
+**Railwayでのデプロイ手順：**
 
-1. Renderにアカウント作成
-2. New Web Service
-3. GitHubリポジトリを選択
+1. Railwayにアカウント作成（[railway.app](https://railway.app)）
+   - GitHubアカウントでログイン
+2. 「New Project」をクリック
+3. 「Deploy from GitHub repo」を選択
+4. リポジトリを選択
+5. 自動的にデプロイが開始されます
+6. デプロイ完了後、生成されたURLを確認
+7. 環境変数があれば「Variables」タブで設定
+
+**Railwayでの設定のポイント：**
+- `server.js`を使用する場合、そのまま動作します
+- 環境変数`PORT`は自動設定されます
+- Puppeteerは通常の`puppeteer`パッケージで動作します（`@sparticuz/chromium`は不要）
+- 無料プランでは月$5のクレジットが提供されます
+- クレジットを使い切ると一時停止します
+
+**Railway用の`package.json`確認：**
+```json
+{
+  "scripts": {
+    "start": "node server.js"
+  }
+}
+```
+
+### オプション4: Render（推奨度：★★★★★）
+
+Renderはフルスタックアプリケーションに最適です。Puppeteerも問題なく動作します。
+
+**メリット：**
+- 無料プランあり（制限あり）
+- Webサービスとして常時稼働可能
+- GitHub連携で自動デプロイ
+- SSL証明書が自動で設定される
+
+**デメリット：**
+- 無料プランは15分間の非アクティブ後にスリープ
+- スリープからの復帰に時間がかかる
+
+**Renderでのデプロイ手順：**
+
+1. Renderにアカウント作成（[render.com](https://render.com)）
+2. 「New」→「Web Service」
+3. GitHubリポジトリを接続
 4. 設定：
-   - Build Command: `npm install`
-   - Start Command: `npm start`
+   - **Name**: 任意の名前（例: `pokeca-deck-analyzer`）
+   - **Environment**: Node
+   - **Region**: 最寄りのリージョン（例: Singapore）
+   - **Branch**: `main`（またはデプロイしたいブランチ）
+   - **Root Directory**: `.`（プロジェクトルート）
+   - **Build Command**: `npm install`
+   - **Start Command**: `npm start`
+   - **Plan**: Free（またはStarter $7/月）
+5. 「Create Web Service」をクリック
+6. デプロイが完了するまで待機（初回は5-10分程度）
 
-### オプション4: Netlify Functions
+**Renderでの設定のポイント：**
+- `server.js`を使用する場合、そのまま動作します
+- 環境変数`PORT`は自動設定されます（`process.env.PORT`を使用）
+- 無料プランでは15分間の非アクティブ後にスリープします
+- スリープからの復帰には30秒〜1分程度かかります
+- Puppeteerは通常の`puppeteer`パッケージで動作します（`@sparticuz/chromium`は不要）
 
-Netlify Functionsを使ってバックエンドを実装する方法もあります。
+**Render用の`package.json`確認：**
+```json
+{
+  "scripts": {
+    "start": "node server.js"
+  }
+}
+```
+
+### オプション5: Fly.io（推奨度：★★★★☆）
+
+Fly.ioはDocker対応で、グローバルに分散配置できます。
+
+**メリット：**
+- Docker対応で柔軟性が高い
+- 低レイテンシ（エッジ配置）
+- 無料枠あり（制限あり）
+
+**デメリット：**
+- Dockerの知識が必要
+- 設定がやや複雑
+
+**Fly.ioでのデプロイ手順：**
+
+1. Fly.ioにアカウント作成
+2. Fly CLIをインストール: `curl -L https://fly.io/install.sh | sh`
+3. ログイン: `fly auth login`
+4. アプリを作成: `fly launch`
+5. `fly.toml`を設定（必要に応じて）
+6. デプロイ: `fly deploy`
+
+**必要な設定（`fly.toml`の例）：**
+```toml
+app = "your-app-name"
+primary_region = "nrt"  # 東京リージョン
+
+[build]
+
+[env]
+  PORT = "8080"
+
+[[services]]
+  internal_port = 8080
+  protocol = "tcp"
+
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+    force_https = true
+
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
+```
+
+### オプション6: Google Cloud Run（推奨度：★★★☆☆）
+
+Google Cloud RunはDockerコンテナを実行できるサーバーレスプラットフォームです。
+
+**メリット：**
+- 使用した分だけ課金（従量課金）
+- 自動スケーリング
+- 無料枠あり（月200万リクエストまで）
+
+**デメリット：**
+- 初期設定が複雑
+- Google Cloud Platformの知識が必要
+- コスト計算が複雑
+
+**Cloud Runでのデプロイ手順：**
+
+1. Google Cloud Platformにアカウント作成
+2. プロジェクトを作成
+3. Cloud Run APIを有効化
+4. `Dockerfile`を作成
+5. デプロイ: `gcloud run deploy`
+
+### オプション7: DigitalOcean App Platform（推奨度：★★★☆☆）
+
+DigitalOceanのPaaSサービスです。
+
+**メリット：**
+- シンプルな設定
+- スケーラブル
+- データベースも簡単に追加可能
+
+**デメリット：**
+- 無料プランなし（最低$5/月）
+- コストが高め
+
+### オプション8: Netlify Functions（非推奨）
+
+Netlify Functionsはサーバーレス関数のみで、Puppeteerには不向きです。
 
 **制限事項：**
 - PuppeteerはNetlify Functionsでは動作しない可能性が高い（制限時間とメモリ制限）
-- 代替として、Puppeteer Core + Chrome Headlessのセットアップが必要
+- 長時間処理に対応していない
+- **本システムには非推奨**
+
+## ホスティングサービス比較表
+
+本システム（Express + Puppeteer）に適したホスティングサービスを比較：
+
+| サービス | 推奨度 | 無料プラン | タイムアウト | Puppeteer対応 | 難易度 | 月額コスト目安 |
+|---------|--------|-----------|------------|--------------|--------|--------------|
+| **Render** | ★★★★★ | あり（制限あり） | 制限なし | ✅ 完全対応 | 簡単 | $0（無料）〜$7 |
+| **Railway** | ★★★★☆ | あり（$5クレジット） | 制限なし | ✅ 完全対応 | 簡単 | $0（無料）〜$5+ |
+| **Vercel** | ★★★★☆ | あり（制限あり） | 10-60秒 | ✅ 対応（要設定） | 簡単 | $0（無料）〜$20 |
+| **Fly.io** | ★★★★☆ | あり（制限あり） | 制限なし | ✅ 完全対応 | 中 | $0（無料）〜$5+ |
+| **Google Cloud Run** | ★★★☆☆ | あり（制限あり） | 60分 | ✅ 完全対応 | 難しい | $0（無料）〜従量 |
+| **DigitalOcean App Platform** | ★★★☆☆ | なし | 制限なし | ✅ 完全対応 | 中 | $5〜 |
+| **Netlify Functions** | ★☆☆☆☆ | あり | 10秒 | ❌ 非対応 | 簡単 | $0（無料） |
+
+### 推奨順位
+
+1. **Render**（最推奨）
+   - 無料プランあり
+   - 設定が簡単
+   - Puppeteerが問題なく動作
+   - 常時稼働可能（無料プランはスリープあり）
+
+2. **Railway**
+   - 設定が非常に簡単
+   - GitHub連携がスムーズ
+   - 無料クレジットあり
+
+3. **Vercel**
+   - サーバーレス関数として動作
+   - タイムアウト制限に注意が必要
+   - Proプラン以上を推奨
+
+4. **Fly.io**
+   - Docker対応で柔軟
+   - グローバル配置可能
+   - 設定がやや複雑
 
 ## 推奨構成
 
 **開発環境：**
 - ローカルで`npm start`して動作確認
 
-**本番環境：**
-- **フロントエンド**: GitHub Pages（無料、簡単）
-- **バックエンド**: Vercel（無料プランあり、Node.js対応）
+**本番環境（推奨順）：**
+
+1. **Render（最推奨）**
+   - 無料プランで動作可能
+   - 設定が簡単
+   - Puppeteerが問題なく動作
+
+2. **Railway**
+   - 無料クレジットで試せる
+   - 設定が非常に簡単
+
+3. **Vercel（Proプラン以上）**
+   - サーバーレス関数として動作
+   - タイムアウト制限に注意
 
 この構成により：
-- フロントエンドは無料でホスティング
-- バックエンドも無料プランで動作可能
+- フロントエンドとバックエンドを一緒にデプロイ可能
 - スケーラブルで保守しやすい
+- コストを抑えられる
+
+## 各サービスでの注意点
+
+### Render
+
+**メリット：**
+- 無料プランでWebサービスとして常時稼働可能
+- 設定が非常に簡単
+- Puppeteerが問題なく動作
+
+**デメリット：**
+- 無料プランは15分間の非アクティブ後にスリープ
+- スリープからの復帰に30秒〜1分かかる
+- スリープを防ぐにはStarterプラン（$7/月）が必要
+
+**推奨設定：**
+- Starterプラン（$7/月）を使用するとスリープしない
+- 無料プランでも動作は可能だが、初回アクセスが遅い
+
+### Railway
+
+**メリット：**
+- 設定が最も簡単
+- GitHub連携がスムーズ
+- 自動デプロイ
+
+**デメリット：**
+- 無料クレジット（月$5）を使い切ると一時停止
+- スケールするとコストが上がる
+
+**推奨設定：**
+- 開発・テスト用途には無料クレジットで十分
+- 本番環境では有料プランを検討
+
+### Vercel
+
+**メリット：**
+- サーバーレス関数として動作
+- 自動スケーリング
+- エッジ配置で高速
+
+**デメリット：**
+- タイムアウト制限が厳しい（Hobby: 10秒、Pro: 60秒）
+- Puppeteerの起動に時間がかかる場合がある
+- `@sparticuz/chromium`が必要
+
+**推奨設定：**
+- Proプラン以上を推奨
+- `vercel.json`で`maxDuration`を設定
+
+### Fly.io
+
+**メリット：**
+- Docker対応で柔軟
+- グローバル配置可能
+- 低レイテンシ
+
+**デメリット：**
+- Dockerの知識が必要
+- 設定がやや複雑
+- 無料枠は制限あり
+
+**推奨設定：**
+- Dockerfileを作成する必要がある
+- リージョンは最寄りを選択（例: 東京 `nrt`）
+
+## サービス別のコード変更が必要な場合
+
+### Render / Railway / Fly.io など（通常のNode.jsサーバー）
+
+**変更不要** - `server.js`をそのまま使用できます。
+
+```javascript
+// server.js をそのまま使用
+const app = express();
+app.listen(process.env.PORT || 3000);
+```
+
+### Vercel（サーバーレス関数）
+
+**変更必要** - `api/deck.js`を使用します（既に実装済み）。
+
+```javascript
+// api/deck.js を使用
+module.exports = async (req, res) => {
+  // Serverless Function形式
+};
+```
+
+## トラブルシューティング
+
+### よくある問題
+
+#### 1. Puppeteerが起動しない
+
+**原因：**
+- 必要な依存関係が不足
+- 権限の問題
+
+**対処法：**
+- `--no-sandbox`オプションを確認（`server.js`に既に含まれています）
+- メモリ不足の可能性がある場合は、プランをアップグレード
+
+#### 2. タイムアウトエラー
+
+**原因：**
+- 処理時間が制限を超えている
+- 外部サイトへのアクセスが遅い
+
+**対処法：**
+- タイムアウト設定を調整
+- より高いプランにアップグレード
+- 処理を最適化
+
+#### 3. メモリ不足エラー
+
+**原因：**
+- Chromiumが大量のメモリを使用
+- プランのメモリ制限を超えている
+
+**対処法：**
+- より高いプランにアップグレード
+- ブラウザインスタンスを適切にクリーンアップ（既に実装済み）
+
+#### 4. スリープからの復帰が遅い（Render無料プラン）
+
+**原因：**
+- 15分間の非アクティブ後にスリープ
+
+**対処法：**
+- Starterプラン（$7/月）にアップグレード
+- または、定期的にpingを送る（外部サービスを使用）
+
+## コスト比較（月額目安）
+
+| サービス | 無料プラン | 有料プラン（最小） | 備考 |
+|---------|-----------|------------------|------|
+| Render | あり（スリープあり） | $7/月 | Starterプランでスリープなし |
+| Railway | あり（$5クレジット） | $5/月 | 使用量に応じて課金 |
+| Vercel | あり（制限あり） | $20/月 | Proプラン推奨 |
+| Fly.io | あり（制限あり） | $5/月 | 使用量に応じて課金 |
+| Google Cloud Run | あり（制限あり） | 従量課金 | 使用量に応じて課金 |
+| DigitalOcean | なし | $5/月 | 最低$5から |
 
 ## 注意事項
 

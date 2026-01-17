@@ -164,6 +164,25 @@ sudo apt-get install -y \
 
 ページの読み込みに時間がかかる場合、`server.js`のタイムアウト設定を調整してください。
 
+## デプロイメント
+
+### Renderへのデプロイ（推奨）
+
+Renderは無料プランで動作し、設定が簡単です。
+
+**クイックスタート:**
+1. [render.com](https://render.com)でアカウント作成
+2. 「New +」→「Web Service」を選択
+3. GitHubリポジトリを接続
+4. 設定:
+   - Build Command: `npm install`
+   - Start Command: `npm start`
+5. 「Create Web Service」をクリック
+
+**詳細な手順:** [docs/RENDER_DEPLOYMENT.md](./docs/RENDER_DEPLOYMENT.md) を参照
+
+**その他のホスティングサービス:** [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md) を参照
+
 ## ライセンス
 
 MIT License
