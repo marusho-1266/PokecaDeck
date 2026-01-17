@@ -55,12 +55,15 @@
   npm install
   ```
   - 依存関係をインストールします
+  - `postinstall`スクリプトにより、Chromeもインストールされます
 
 - **Start Command**: 
   ```
   npm start
   ```
-  - `package.json`の`start`スクリプトを実行します（`node server.js`）
+  - `package.json`の`start`スクリプトを実行します
+  - `start.sh`スクリプトが起動時にChromeのインストールを確認します
+  - Renderではビルドとランタイムが分離されているため、起動時にChromeを再インストールします
 
 ### プラン選択
 
@@ -137,12 +140,15 @@
 **症状**: デッキ解析が失敗する、または「Could not find Chrome」エラーが発生する
 
 **原因と対処法**:
-- Renderでは、PuppeteerがChromeを自動的にダウンロードしないため、ビルド時に明示的にインストールする必要があります
-- `package.json`に`postinstall`スクリプトが追加されていることを確認（`npx puppeteer browsers install chrome`）
-- このスクリプトにより、`npm install`の後に自動的にChromeがインストールされます
+- Renderでは、ビルド環境とランタイム環境が分離されているため、ビルド時にインストールしたChromeがランタイムに存在しない可能性があります
+- この問題を解決するため、以下の対策が実装されています：
+  1. `package.json`の`postinstall`スクリプトでビルド時にChromeをインストール
+  2. `start.sh`スクリプトで起動時にChromeを再インストール（ランタイム環境用）
+  3. `server.js`でChromeが見つからない場合のフォールバック処理
 - 既に修正済みの場合は、再デプロイしてください
 - `server.js`のPuppeteer設定を確認（`--no-sandbox`オプションが含まれているか）
 - メモリ不足の可能性がある場合は、Starterプランにアップグレード
+- 起動時にChromeのインストールが行われるため、初回リクエストまでに少し時間がかかる場合があります
 
 #### 4. スリープからの復帰が遅い（無料プラン）
 

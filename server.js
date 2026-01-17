@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const puppeteer = require('puppeteer');
 const path = require('path');
+const { execSync } = require('child_process');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,16 +17,49 @@ let browser = null;
 
 async function getBrowser() {
   if (!browser) {
-    browser = await puppeteer.launch({
-      headless: true,
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-accelerated-2d-canvas',
-        '--disable-gpu'
-      ]
-    });
+    try {
+      browser = await puppeteer.launch({
+        headless: true,
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-accelerated-2d-canvas',
+          '--disable-gpu'
+        ]
+      });
+      console.log('ブラウザの起動に成功しました');
+    } catch (error) {
+      // Chromeが見つからない場合、インストールを試みる（フォールバック）
+      if (error.message.includes('Could not find Chrome')) {
+        console.log('Chromeが見つかりません。インストールを試みます...');
+        try {
+          execSync('npx puppeteer browsers install chrome', { 
+            stdio: 'inherit',
+            timeout: 120000 // 2分のタイムアウト
+          });
+          console.log('Chromeのインストールが完了しました。再試行します...');
+          
+          // 再試行
+          browser = await puppeteer.launch({
+            headless: true,
+            args: [
+              '--no-sandbox',
+              '--disable-setuid-sandbox',
+              '--disable-dev-shm-usage',
+              '--disable-accelerated-2d-canvas',
+              '--disable-gpu'
+            ]
+          });
+          console.log('ブラウザの起動に成功しました（再試行後）');
+        } catch (installError) {
+          console.error('Chromeのインストールに失敗しました:', installError);
+          throw error; // 元のエラーを再スロー
+        }
+      } else {
+        throw error;
+      }
+    }
   }
   return browser;
 }
