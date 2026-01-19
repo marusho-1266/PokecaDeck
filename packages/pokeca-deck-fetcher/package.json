@@ -1,0 +1,41 @@
+{
+  "name": "pokeca-deck-fetcher",
+  "version": "1.0.0",
+  "description": "ポケモンカードゲームのデッキコードからデッキ情報を取得するライブラリ",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
+  "keywords": [
+    "pokemon",
+    "tcg",
+    "deck",
+    "fetcher",
+    "pokeca",
+    "ポケモンカード"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer": "^24.15.0",
+    "puppeteer-core": "^24.15.0"
+  },
+  "peerDependencies": {
+    "@sparticuz/chromium": "^133.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@sparticuz/chromium": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "files": [
+    "src/**/*",
+    "README.md",
+    "LICENSE"
+  ]
+}
