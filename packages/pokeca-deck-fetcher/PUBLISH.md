@@ -27,27 +27,97 @@ node examples/express-api.js
 npm login
 ```
 
-### 2. パッケージ名の確認
+### 2. 2要素認証（2FA）の設定
+
+npmにパッケージを公開するには、2要素認証（2FA）が必要です。
+
+#### 方法A: npmアカウントで2FAを有効にする（推奨）
+
+1. [npm公式サイト](https://www.npmjs.com/)にログイン
+2. アカウント設定 → 「Two-Factor Authentication」を有効化
+3. 認証アプリ（Google Authenticatorなど）でQRコードをスキャン
+4. 認証コードを入力して有効化
+
+#### 方法B: Granular Access Tokenを使用する
+
+2FAを有効にしたくない場合は、細かい権限のアクセストークンを作成します。
+
+1. [npm公式サイト](https://www.npmjs.com/)にログイン
+2. アカウント設定 → 「Access Tokens」を開く
+3. 「Generate New Token」をクリック
+4. トークンタイプ: 「Granular」を選択
+5. 権限: 「Publish」を選択
+6. パッケージ: 特定のパッケージ名を指定（例: `pokeca-deck-fetcher`）
+7. トークンを生成し、安全な場所に保存
+
+トークンを使用してログイン:
+
+```bash
+npm login --auth-type=legacy
+# Username: あなたのnpmユーザー名
+# Password: 生成したトークン
+# Email: あなたのメールアドレス
+```
+
+または、`.npmrc`ファイルに直接設定:
+
+```bash
+# .npmrcファイルに追加
+echo "//registry.npmjs.org/:_authToken=YOUR_TOKEN_HERE" > ~/.npmrc
+```
+
+### 3. パッケージ名の確認
 
 `package.json`の`name`フィールドが既に使用されていないか確認してください。
+
+```bash
+npm view pokeca-deck-fetcher
+```
+
 既に使用されている場合は、別の名前に変更する必要があります。
 
-### 3. バージョンの確認
+### 4. バージョンの確認
 
 `package.json`の`version`フィールドを確認・更新してください。
 
-### 4. 公開
+### 5. 公開
 
 ```bash
 cd packages/pokeca-deck-fetcher
 npm publish
 ```
 
-### 5. 公開後の確認
+**注意**: 初回公開時は、2FAの認証コードが求められる場合があります。
+
+### 6. 公開後の確認
 
 ```bash
 npm view pokeca-deck-fetcher
 ```
+
+## エラー対処
+
+### 403 Forbidden エラー（2FA関連）
+
+エラーメッセージ:
+```
+403 Forbidden - Two-factor authentication or granular access token with bypass 2fa enabled is required to publish packages.
+```
+
+**解決方法**:
+1. npmアカウントで2FAを有効化する（上記「方法A」を参照）
+2. または、Granular Access Tokenを作成して使用する（上記「方法B」を参照）
+
+### パッケージ名が既に使用されている
+
+エラーメッセージ:
+```
+403 Forbidden - You do not have permission to publish "package-name".
+```
+
+**解決方法**:
+1. `package.json`の`name`フィールドを別の名前に変更
+2. または、そのパッケージの所有者に連絡して権限を取得
 
 ## ローカルで使用する場合（公開前のテスト）
 

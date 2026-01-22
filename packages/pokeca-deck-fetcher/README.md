@@ -246,6 +246,7 @@ for (const deckCode of deckCodes) {
 
 ## ドキュメント
 
+- [仕様書](./SPECIFICATION.md) - 詳細なAPI仕様とデータ構造
 - [クイックスタート](./QUICKSTART.md) - 5分で始める
 - [使用手順ガイド](./USAGE.md) - 詳細な使用方法
 - [統合方法](./INTEGRATION.md) - 別アプリへの統合方法
